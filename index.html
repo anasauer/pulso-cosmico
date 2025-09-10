@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PULSO CÓSMICO</title>
+    <!-- Importación de las fuentes Lexend y Lexend Giga -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Giga:wght@100..900&family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root{
+            --bg1: #2b003a;
+            --bg2: #4a148c;
+            --bg3: #880e4f;
+            --muted: #E0E0E0;
+            --accent: #ab47bc;
+            --panel-bg: rgba(255, 255, 255, 0.08);
+            --panel-border: rgba(255, 255, 255, 0.15);
+        }
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+            color: var(--muted);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Título principal con la fuente "Lexend Giga" */
+        .title-font {
+            font-family: 'Lexend Giga', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 28px 16px 0px; 
+        }
+
+        header img {
+            height: 80px;
+        }
+
+        header h1 {
+            margin: 12px 0 6px;
+            font-size: 1.6rem;
+            color: #fff;
+        }
+
+        header p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 16px;
+            width: 100%;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 8px 0;
+        }
+
+        .bottom-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .btn {
+            background: linear-gradient(180deg, #23102b, #120519);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px 14px;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        /* Botones de tirada */
+        .btn.tirada {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--panel-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 999px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .btn.tirada:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn.primary {
+            background: linear-gradient(90deg, #ce3cc7, #880e4f);
+            box-shadow: 0 8px 40px rgba(155, 92, 255, 0.12);
+            border: none;
+        }
+
+        .btn.primary:hover {
+            background: linear-gradient(90deg, #a047a0, #680b3d);
+        }
+
+        .grid-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            justify-content: center;
+            margin-top: 14px;
+        }
+
+        /* Card 3D */
+        .card-wrap {
+            width: 160px;
+            flex: 0 0 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-container {
+            width: 100%;
+            aspect-ratio: 160/240;
+            perspective: 1200px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            transform-style: preserve-3d;
+            transition: transform .8s;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 12px 40px rgba(2, 6, 23, 0.6);
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            backface-visibility: hidden;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .card-front {
+            transform: rotateY(180deg);
+            background-image: var(--card-front-image);
+        }
+
+        .card-back {
+            background-image: var(--card-back-image);
+            background-color: #311b92;
+        }
+
+        /* area tag */
+        .area-tag {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 12px;
+            margin-bottom: 8px;
+            color: #f3edf9;
+        }
+
+        /* interpretation panel */
+        .interpret {
+            width: 100%;
+            background: var(--panel-bg);
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--panel-border);
+            padding: 20px;
+            margin-top: 24px;
+            color: #f7f3fb;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+            
+            /* --- AJUSTE DE TAMAÑO PARA SOLUCIONAR EL PROBLEMA DE LA ALTURA VARIABLE --- */
+            /* Heigth for all cards */
+            min-height: 280px; 
+            max-height: 280px;
+            overflow-y: auto; 
+            /* scrollbar style */
+            scrollbar-width: thin;
+            scrollbar-color: #ab47bc transparent;
+        }
+
+        .interpret.visible {
+            opacity: 1;
+        }
+
+        .interpret .title {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .interpret .area {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .interpret .desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.4;
+        }
+        
+        .small {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .status-message {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4a148c;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transition: opacity .4s;
+        }
+
+        .status-message.show {
+            opacity: 1;
+        }
+
+        /* Botón de compartir individual más pequeño */
+        .btn.small {
+            padding: 6px 12px;
+            font-size: 10px;
+        }
+
+        /* Estilos de la pantalla de inicio */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+        .intro-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-screen img {
+            max-width: 200px; /* Logo más grande en la intro */
+            height: auto;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .app-main {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .app-main.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* responsive */
+        @media (max-width: 640px) {
+            .card-wrap {
+                flex: 0 0 44%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pantalla de inicio -->
+    <div id="intro-screen" class="intro-screen">
+        <img src="assets/logo-pulso-bco.svg" alt="Logo Pulso Cósmico" onerror="this.onerror=null;this.src='https://placehold.co/200x200/2b003a/E0E0E0?text=PULSO+COSMICO';">
+        <h1 class="title-font text-2xl text-white mt-8 mb-4">Pulso Cósmico</h1>
+        <p class="text-white/70 text-center max-w-xs px-4 mb-8">Conectá con la energía del día, recibí tu carta y su mensaje.</p>
+        <button id="start-btn" class="btn primary text-lg px-8 py-3 rounded-full">
+            Iniciar tirada
+        </button>
+    </div>
+
+    <!-- message box (copiado / errores) -->
+    <div id="message-box" style="position:fixed;top:12px;right:12px;background:#fff;color:#4a148c;padding:8px 12px;border-radius:8px;display:none;z-index:1200">Copiado!</div>
+
+    <!-- Contenido principal de la app -->
+    <div id="app-main" class="app-main">
+        <header class="text-center">
+            <div class="flex justify-center items-center mb-4">
+                <img src="assets/logo-pulso-bco.svg" alt="Logo Pulso Cósmico" class="w-32 h-auto" onerror="this.onerror=null;this.src='https://placehold.co/128x128/2b003a/E0E0E0?text=PULSO+COSMICO';">
+            </div>
+            <p class="mt-1 text-md sm:text-md text-white/50 max-w-sm">Conectá con la energía del día, recibí tu carta y su mensaje.</p>
+        </header>
+
+        <div class="container">
+            <!-- Controles para la tirada, en la parte superior -->
+            <div class="controls" role="toolbar" aria-label="Controles">
+                <button id="draw-1-btn" class="btn tirada">1 Carta</button>
+                <button id="draw-3-btn" class="btn tirada">3 Cartas</button>
+                <button id="draw-5-btn" class="btn tirada">5 Cartas</button>
+            </div>
+
+            <div class="flex justify-center mb-2">
+                <label style="display:flex;align-items:center;gap:8px;">
+                    <input id="autoFlip" type="checkbox">
+                    <span class="small">Auto-revelar</span>
+                </label>
+            </div>
+
+            <!-- grid de cartas -->
+            <div id="card-grid" class="grid-cards" aria-live="polite"></div>
+
+            <!-- Botones movidos debajo de las cartas -->
+            <div class="bottom-controls" role="toolbar" aria-label="Controles de acción">
+                <button id="reveal-btn" class="btn">Revelar</button>
+                <button id="shuffle-btn" class="btn">Barajar</button>
+                
+                <button id="share-btn" class="btn primary">Compartir tirada</button>
+            </div>
+            <div> <button id="toggle-history-btn" class="btn small">Ver historial</button></div>
+
+            <!-- historial (ahora oculto) -->
+            <div id="history-panel" class="history mt-6" style="display: none;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <strong>Historial</strong>
+                    <button id="clear-history" class="btn small">Borrar</button>
+                </div>
+                <ul id="history-list" style="list-style:none;padding:0;margin:0"></ul>
+            </div>
+        </div>
+
+        <div id="status-message" class="status-message" role="status" aria-live="assertive"></div>
+    </div>
+    
+<script>
+    /* ---------- Config ---------- */
+    const TOTAL_CARDS = 74;
+    const PUERTA_CHANCE = 0.18; // probabilidad de que salga dorso puerta
+    const STORAGE_HIST_KEY = 'pulso_hist_v1';
+    
+    // Aquí puedes escribir el contenido de cada carta.
+    // Simplemente edita el texto entre las comillas en 'description'.
+    const allCardsData = [
+        { id: 1, title: "SUEÑO MENSAJERO", description: "Ese sueño que no podés olvidar no es capricho de tu mente. Escuchá la emoción que te deja.", area: "Puerta Cósmica" },
+        { id: 2, title: "ATAJO INESPERADO", description: "Lo que estaba trabado se abre solo… no lo frenes con dudas. Avanzá..", area: "Puerta cósmica" },
+        { id: 3, title: "PUERTA CERRADA, CAMINO LIBRE", description: "Si se repite el obstáculo, soltá. Si fluye, avanzá. La energía ya te marcó la ruta.", area: "Puerta cósmica" },
+        { id: 4, title: "COINCIDENCIA PERFECTA", description: "Nada es casualidad cuando el tiempo encaja como pieza de rompecabezas. Observa: esto no es azar, es invitación..", area: "Puerta cósmica" },
+        { id: 5, title: "LA TORMENTA NECESARIA", description: "No es caos, es limpieza. A veces lo que arrasa, también despeja.", area: "Puerta cósmica" },
+        { id: 6, title: "SUSURRO SOLAR", description: "Escucha la voz cálida que te recuerda: lo que iluminas, florece.", area: "Puerta cósmia" },
+        { id: 7, title: "ECO DE GRATITUD", description: "Hoy, agradece tres veces: por lo que fue, por lo que es, y por lo que vendrá", area: "Movimiento" },
+        { id: 8, title: "EL RAYO DE CLARIDAD", description: "En medio de la neblina, una chispa de verdad ilumina todo.", area: "Puerta cóscmica" },
+        { id: 9, title: "LA ESCALERA", description: "No esperes el gran milagro. Hoy, cada pequeño paso de fe es un escalón hacia donde quieres llegar.", area: "Autoconocimiento" },
+        { id: 10, title: "VIBRACIÓN EXACTA", description: "Esto que acaba de pasar… es para vos. Sentilo, no lo cuestiones.", area: "Puerta cósmica" },
+        { id: 11, title: "EL ESPEJO INTERIOR ", description: "Lo que ves en otros es lo que tu alma te invita a ver en ti. Sé honesta contigo..", area: "Autoconocimiento" },
+        { id: 12, title: "CLARIDAD", description: "La niebla se disipa cuando decides mirar sin miedo.", area: "Autoconocimiento" },
+        { id: 13, title: "EL CAMINO DEL ALMA", description: "Confía en que incluso los desvíos te llevan a tu propósito.", area: "Autoconocimiento" },
+        { id: 14, title: "SOMBRA Y LUZ", description: "Aceptar tu sombra te hace más luminosa que rechazarla", area: "Autoconocimiento" },
+        { id: 15, title: "VOZ INTERIOR", description: "Ese susurro que callas es la brújula que te guía.", area: "Autoconocimiento" },
+        { id: 16, title: "EL PULSO INTERNO", description: "Confía en esa corazonada. Sabés más de lo que pensás.", area: "Autoconocimiento" },
+        { id: 17, title: "LA SEMILLA INVISIBLE", description: "Todavía no lo ves, pero algo ya está creciendo.", area: "Autoconocimiento" },
+        { id: 18, title: "EL ECO", description: "1.	“¿Estás repitiendo o eligiendo? Lo que hacés resuena.", area: "Autoconocimiento" },
+        { id: 19, title: "EL SÍ SILENCIOSO", description: "Dijiste que sí, sin palabras. Confía en el gesto que tu alma ya dio.", area: "Autoconocimiento" },
+        { id: 20, title: "LA MIRADA TIERNA", description: "Probá mirarte como mirarías a alguien que amás.", area: "Sanación" },
+        { id: 21, title: "EL PORTAL INTERIOR", description: "Tu mayor puerta no se abre hacia afuera, sino hacia adentro.", area: "Autoconocimiento" },
+        { id: 22, title: "LIBRO INTERNO", description: "Todo lo que necesitas saber ya está escrito en tu interior. Hoy, solo lee entre líneas de tu propia historia.", area: "Autoconocimiento" },
+        { id: 23, title: "FARO INTERNO", description: "No esperes que te rescaten. Sé la luz que atrae lo que buscas.", area: "Autoconocimiento" },
+        { id: 24, title: "RAÍZ DE CALMA ", description: "Hoy, no te muevas por impulso. Planta tus raíces en la serenidad y deja que el día crezca solo.", area: "Autoconocimiento" },
+        { id: 25, title: "RÍO INTERNO", description: "No corras hacia el mar. Deja que tu cauce encuentre su forma natural.", area: "Autoconocimiento" },
+        { id: 26, title: "TEJIDO INVISIBLE", description: "Tus actos hoy unen hilos que mañana formarán un manto de oportunidades.", area: "Autoconocimiento" },
+        { id: 27, title: "LA SEÑAL", description: "Hoy, todo lo que llega tiene un mensaje. Escuchá lo que resuena.", area: "Sincronías" },
+        { id: 28, title: "LA VOZ DEL OTRO LADO", description: "Un mensaje quiere llegar. ¿Estás escuchando?", area: "Sanación" },
+        { id: 29, title: "ECO DEL UNIVERSO", description: "Una palabra, símbolo o número se repite ante ti… no es ruido, es clave. Anota y conéctalo.", area: "Sincronías" },
+        { id: 30, title: "PUERTA ABIERTA", description: "Cuando una puerta se abre, es un mundo de oportunidades que s epresentan.", area: "Sincronías" },
+        { id: 31, title: "EL NÚMERO SAGRADO", description: "Los números que se repiten no son casualidad; escucha el patrón.", area: "Sincronías" },
+        { id: 32, title: "ALAS INVISIBLES", description: "Estás más acompañada de lo que crees, aunque no puedas verlos.", area: "Sincronías" },
+        { id: 33, title: "SEÑAL DIVINA", description: "Esa coincidencia repetida es el universo guiándote suavemente.", area: "Sincronías" },
+        { id: 34, title: "SUSURROS DEL TIEMPO", description: "El momento perfecto rara vez llega… créalo tú.", area: "Sincronías" },
+        { id: 35, title: "MENSAJE", description: "Cuando alguien aparece con palabras que necesitabas, agradece y aprende.", area: "Sincronías" },
+        { id: 36, title: "EL MENSAJERO HUMANO", description: "Alguien cruza tu camino para darte una pieza del mapa. Incluso si no se queda, agradece el puente.", area: "Sincronías" },
+        { id: 37, title: "PULSO DEL CUERPO", description: "Escalofríos, calor, piel erizada… tu cuerpo te confirma que algo importa. Escuchalo.", area: "Sincronías" },
+        { id: 38, title: "RESPUESTA DEL ENTORNO", description: "El mundo te habla usando lo que tenés alrededor. Lo que sentís, pensás o decís, se refleja afuera.", area: "Sincronías" },
+        { id: 39, title: "EL VÍNCULO INVISIBLE", description: "Lo que une no siempre se ve, pero siempre se siente.", area: "Sincronías" },
+        { id: 40, title: "PUENTE LUNAR", description: "Un paso suave puede cruzar grandes distancias si lo das con fe.", area: "Sincronías" },
+        { id: 41, title: "EL VIAJERO ESTELAR", description: "Tu energía no tiene fronteras. Cada paso, cada pensamiento, viaja más allá de lo visible y deja huellas de luz en el universo.", area: "Sincronías" },
+        { id: 42, title: "LA ENERGÍA EN MOVIMIENTO", description: "Limpiá, mové, soltá. Dejá que circule lo nuevo.", area: "Movimiento" },
+        { id: 43, title: "EL NO TAMBIÉN ES SAGRADO", description: "Hoy podés decir que no. Es una forma de cuidarte.", area: "Movimiento" },
+        { id: 44, title: "LA PAUSA ELEGIDA", description: "Frenar también es un movimiento.", area: "Movimiento" },
+        { id: 45, title: "EL GIRO INESPERADO", description: "Cuando creías conocer el camino, la vida decide mostrarte una curva brillante.", area: "Movimiento" },
+        { id: 46, title: "LA TORMENTA JUSTA", description: "No toda tormenta te moja. Algunas te rodean para que aprendas a moverte entre ellas.", area: "Movimiento" },
+        { id: 47, title: "EL CAMBIO IMNINENTE", description: "La tierra ya tiembla bajo tus pies: algo nuevo está por brotar.", area: "Movimiento" },
+        { id: 48, title: "PRIMER PASO", description: "Todo cambio empieza con una acción pequeña, pero firme.", area: "Movimiento" },
+        { id: 49, title: "VALENTÍA", description: "El miedo también es energía; úsala como motor, no como freno.", area: "Movimiento" },
+        { id: 50, title: "EL RITMO DEL CAMBIO", description: "Cuando la vida cambia el plan, fluye en lugar de resistir.", area: "movimineto" },
+        { id: 51, title: "RITMO PROPIO", description: "No corras. Avanza al compás de tu alma, no del reloj.", area: "Movimiento" },
+        { id: 52, title: "PUENTE", description: "Atrévete a cruzar: el otro lado tiene lo que buscas.", area: "Movimiento" },
+        { id: 53, title: "MANOS A LA OBRA", description: "El universo acompaña el movimiento, no la espera.", area: "Movimiento" },
+        { id: 54, title: "EL SALTO", description: "El universo ya abrió la puerta. Ahora es tu turno de dar el salto. No esperes sentirte lista al 100%; el movimiento traerá la claridad y no al revés.", area: "Movimiento" },
+        { id: 55, title: "LA INVITACIÓN QUE DA MIEDO", description: "Si da vértigo pero también entusiasmo, ahí está el salto que te cambia la vida.", area: "Movimiento" },
+        { id: 56, title: "LA ESPERA ACTIVA", description: "Limpiá, mové, soltá. Dejá que circule lo nuevo.", area: "Movimineto" },
+        { id: 57, title: "LA GRACIA DEL ERROR", description: "Metiste la pata. ¿Y? Eso también es parte del camino.", area: "Movimiento" },
+        { id: 58, title: "MANO ABIERTA", description: "Aflojar el control es dejar espacio a lo que de verdad importa.", area: "Movimiento" },
+        { id: 59, title: "LA LLAMA QUE NO SE APAGA", description: "Aunque todo parezca quieto, adentro tuyo hay movimiento.", area: "Sanación" },
+        { id: 60, title: "EL DESPERTAR LENTO", description: "Hoy no necesitás correr. El cambio también se hace en pantuflas.", area: "Sanación" },
+        { id: 61, title: "LA CORAZA SUAVECITA", description: "Podés protegerte sin cerrarte. Poné límites, pero con amor.", area: "Sanación" },
+        { id: 62, title: "EL PORTAL COTIDIANO", description: "Lo mágico también pasa en la fila del súper. Presta atención.", area: "Sanación" },
+        { id: 63, title: "EL MENSAJE DEL CUERPO", description: "“¿Dónde lo sentís? El cuerpo no miente, escuchalo.", area: "Sanación" },
+        { id: 64, title: "EL SUSPIRO PROFUNDO", description: "Respirar hondo puede ser un hechizo. Hacelo más seguido.", area: "Sanación" },
+        { id: 65, title: "DESCANSO SAGRADO ", description: "No es pereza; es tu alma pidiendo silencio y pausa.", area: "Sanación" },
+        { id: 66, title: "LUZ SUAVE ", description: "No siempre hay que brillar con fuerza; a veces, la calma es tu mejor luz.", area: "Sanación" },
+        { id: 67, title: "LLAMA SERENA", description: "La pasión no siempre arde: a veces, calienta y sostiene.", area: "Sanación" },
+        { id: 68, title: "BRUMA QUE GUÍA", description: "Aunque no veas el camino, la dirección ya está sembrada en tu corazón.", area: "Sanación" },
+        { id: 69, title: "EL ANCLA DE LA GRATITUD", description: "La gratitud es tu ancla. ¿Qué puedes agradecer hoy, por pequeño que sea?", area: "Sanación" },
+        { id: 70, title: "LA RAÍZ EN EL AIRE", description: "No necesitas tener todo resuelto para empezar. El primer paso es solo confiar en que crecerás.", area: "Sincronías" },
+        { id: 71, title: "EL JARDÍN DEL SILENCIO", description: "Todo lo que necesitas saber ya está escrito en tu interior. Hoy, solo lee entre líneas de tu propia historia.", area: "Sanación" },
+        { id: 72, title: "RENACER", description: "Cada final trae consigo un inicio. Soltá con amor lo que ya cumplió su ciclo y permitite florecer desde lo que sos hoy. Este es tu nuevo comienzo.", area: "Sanación" },
+        { id: 73, title: "LA TRIBU", description: "Buscá y dejate encontrar. No tenés que hacerlo sola.", area: "Sanación" },
+        { id: 74, title: "EL SÍ GENUNIO", description: "No digas que sí por costumbre. Decirlo desde el corazón cambia el destino.", area: "Sanación" },
+        
+    ];
+    
+    /* ---------- Utils ---------- */
+    const introScreen = document.getElementById('intro-screen');
+    const appMain = document.getElementById('app-main');
+    const grid = document.getElementById('card-grid');
+    const autoFlipEl = document.getElementById('autoFlip');
+    const statusMessage = document.getElementById('status-message');
+    const messageBox = document.getElementById('message-box');
+
+    function showStatus(text, ms = 1600) {
+        statusMessage.textContent = text;
+        statusMessage.classList.add('show');
+        setTimeout(() => statusMessage.classList.remove('show'), ms);
+    }
+
+    function showTopMessage(text) {
+        messageBox.style.display = 'block';
+        messageBox.textContent = text;
+        setTimeout(() => messageBox.style.display = 'none', 1400);
+    }
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    /* ---------- Card builder ---------- */
+    let selectedCardsData = [];
+    let lastTirada = null;
+
+    function createCardElement(cardDataObj) {
+        const wrap = document.createElement('div');
+        wrap.className = 'card-wrap';
+
+        // area tag
+        const areaTag = document.createElement('div');
+        areaTag.className = 'area-tag';
+        areaTag.textContent = cardDataObj.area;
+        wrap.appendChild(areaTag);
+
+        // card container
+        const cardContainer = document.createElement('div');
+        cardContainer.className = 'card-container';
+        cardContainer.style.width = '100%';
+        cardContainer.style.height = '100%';
+
+        // card element
+        const card = document.createElement('div');
+        card.className = 'card';
+        // ensure starts unflipped
+        card.classList.remove('flipped');
+
+        // pick back random
+        const backName = Math.random() < PUERTA_CHANCE ? 'back_puerta.png' : 'back_normal.png';
+        const backUrl = `assets/cards/${backName}`;
+        const frontUrl = `assets/cards/card_${String(cardDataObj.id).padStart(3, '0')}.png`;
+
+        // faces
+        const backFace = document.createElement('div');
+        backFace.className = 'card-face card-back';
+        backFace.style.setProperty('--card-back-image', `url("${backUrl}")`);
+
+        const frontFace = document.createElement('div');
+        frontFace.className = 'card-face card-front';
+        frontFace.style.setProperty('--card-front-image', `url("${frontUrl}")`);
+
+        card.appendChild(backFace);
+        card.appendChild(frontFace);
+        cardContainer.appendChild(card);
+        wrap.appendChild(cardContainer);
+
+        // interpretation panel
+        const interp = document.createElement('div');
+        interp.className = 'interpret interpretation-panel';
+        interp.innerHTML = `
+            <div class="title">${cardDataObj.title}</div>
+            <div class="area">Área: ${cardDataObj.area}</div>
+            <div class="desc" id="desc-${cardDataObj.id}">${escapeHtml(cardDataObj.description)}</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+                <button class="btn small" data-action="share">Compartir carta</button>
+            </div>
+        `;
+        wrap.appendChild(interp);
+
+        // events
+        card.addEventListener('click', () => {
+            if (card.classList.contains('flipped')) return; // already flipped
+            revealCard(card, interp);
+        });
+
+        // delegate share event
+        interp.addEventListener('click', (ev) => {
+            const target = ev.target;
+            const action = target.getAttribute('data-action');
+            if (!action) return;
+            if (action === 'share') {
+                shareSingleCard(cardDataObj);
+            }
+        });
+
+        return { wrap, card, interp, cardDataObj };
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+    }
+
+    /* ---------- reveal / revealAll ---------- */
+    function revealCard(cardEl, interpEl) {
+        cardEl.classList.add('flipped');
+        interpEl.classList.add('visible'); // Add the visible class to fade in the text
+    }
+
+    function revealAllCards() {
+        const cardEls = document.querySelectorAll('.card');
+        cardEls.forEach(card => {
+            if (!card.classList.contains('flipped')) {
+                const wrap = card.closest('.card-wrap');
+                const interp = wrap.querySelector('.interpretation-panel');
+                revealCard(card, interp);
+            }
+        });
+        showStatus('Cartas reveladas');
+    }
+
+    /* ---------- Deal / Shuffle / History ---------- */
+    function dealCards(count) {
+        grid.innerHTML = '';
+        showStatus(`Repartiendo ${count} carta(s)...`);
+        // clone & shuffle
+        const pool = allCardsData.slice();
+        shuffle(pool);
+        selectedCardsData = pool.slice(0, count);
+        lastTirada = { date: new Date().toISOString(), cards: selectedCardsData.map(c => c.id) };
+        // render
+        selectedCardsData.forEach(cd => {
+            const { wrap, card } = createCardElement(cd);
+            wrap.setAttribute('data-card-id', cd.id);
+            grid.appendChild(wrap);
+        });
+        // if autoFlip
+        if (autoFlipEl.checked) {
+            const cardNodes = Array.from(document.querySelectorAll('.card-wrap'));
+            cardNodes.forEach((wrp, idx) => {
+                const cardEl = wrp.querySelector('.card');
+                const interp = wrp.querySelector('.interpretation-panel');
+                setTimeout(() => { revealCard(cardEl, interp); }, 600 * (idx + 1));
+            });
+        }
+        // push to history
+        addHistory(lastTirada);
+        buildHistory();
+    }
+
+    function shuffleCurrent() {
+        const count = selectedCardsData.length || 1;
+        dealCards(count);
+    }
+
+    /* History functions */
+    function addHistory(entry) {
+        const hist = JSON.parse(localStorage.getItem(STORAGE_HIST_KEY) || '[]');
+        hist.unshift(entry);
+        localStorage.setItem(STORAGE_HIST_KEY, JSON.stringify(hist.slice(0, 200)));
+    }
+
+    function buildHistory() {
+        const list = document.getElementById('history-list');
+        list.innerHTML = '';
+        const hist = JSON.parse(localStorage.getItem(STORAGE_HIST_KEY) || '[]');
+        hist.forEach(h => {
+            const li = document.createElement('li');
+            const d = new Date(h.date);
+            const dateStr = d.toLocaleString();
+            li.textContent = `${dateStr} → [${h.cards.join(', ')}]`;
+            li.style.padding = "6px";
+            li.style.marginBottom = "6px";
+            li.style.borderRadius = "8px";
+            li.style.background = "rgba(255, 255, 255, 0.05)";
+            li.style.fontSize = "14px";
+            list.appendChild(li);
+        });
+    }
+
+    /* share current tirada or copy fallback */
+    async function shareTirada() {
+        if (!lastTirada) {
+            showTopMessage('No hay tirada para compartir');
+            return;
+        }
+        const title = 'Pulso Cósmico — Mi tirada';
+        const text = `Mi tirada: ${lastTirada.cards.join(', ')} — ${window.location.href}`;
+        if (navigator.share) {
+            try {
+                await navigator.share({ title, text, url: window.location.href });
+                showTopMessage('Compartido');
+            } catch (e) {
+                showTopMessage('Cancelado');
+            }
+        } else {
+            try {
+                // Using document.execCommand for better iFrame compatibility
+                const el = document.createElement('textarea');
+                el.value = text;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                showTopMessage('Tirada copiada al portapapeles');
+            } catch (e) {
+                showTopMessage('No se pudo copiar');
+            }
+        }
+    }
+
+    /* share single card (card object) */
+    async function shareSingleCard(cardObj) {
+        const text = `${cardObj.title} — ${cardObj.description}\nPulso Cósmico`;
+        if (navigator.share) {
+            try {
+                await navigator.share({ title: cardObj.title, text });
+                showTopMessage('Carta compartida');
+            } catch (e) { showTopMessage('Cancelado'); }
+        } else {
+            try {
+                // Using document.execCommand for better iFrame compatibility
+                const el = document.createElement('textarea');
+                el.value = text;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                showTopMessage('Carta copiada');
+            } catch (e) { showTopMessage('No se pudo copiar'); }
+        }
+    }
+
+    /* ---------- wire buttons ---------- */
+    document.getElementById('start-btn').addEventListener('click', () => {
+        introScreen.classList.add('fade-out');
+        setTimeout(() => {
+            introScreen.style.display = 'none';
+            appMain.classList.add('visible');
+        }, 500); 
+    });
+
+    document.getElementById('draw-1-btn').addEventListener('click', () => dealCards(1));
+    document.getElementById('draw-3-btn').addEventListener('click', () => dealCards(3));
+    document.getElementById('draw-5-btn').addEventListener('click', () => dealCards(5));
+    document.getElementById('reveal-btn').addEventListener('click', revealAllCards);
+    document.getElementById('shuffle-btn').addEventListener('click', shuffleCurrent);
+    document.getElementById('share-btn').addEventListener('click', shareTirada);
+    document.getElementById('clear-history').addEventListener('click', () => {
+        // Reemplazar `confirm()` con una ventana modal personaliza
+        if (window.confirm("¿Seguro que quieres borrar el historial?")) {
+            localStorage.removeItem(STORAGE_HIST_KEY);
+            buildHistory();
+        }
+    });
+
+    const historyPanel = document.getElementById('history-panel');
+    document.getElementById('toggle-history-btn').addEventListener('click', () => {
+        historyPanel.style.display = historyPanel.style.display === 'none' ? 'block' : 'none';
+    });
+
+    /* init on load */
+    window.onload = () => {
+        buildHistory();
+        dealCards(1); 
+    }
+</script>
+</body>
+</html>
