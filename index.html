@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="es"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PULSO CÓSMICO</title>
@@ -366,14 +365,20 @@
 
             <!-- grid de cartas -->
             <div id="card-grid" class="grid-cards" aria-live="polite"></div>
-
+			
             <!-- Botones movidos debajo de las cartas -->
             <div class="bottom-controls" role="toolbar" aria-label="Controles de acción">
                 <button id="reveal-btn" class="btn">Revelar</button>
                 <button id="shuffle-btn" class="btn">Barajar</button>
                 
                 <button id="share-btn" class="btn primary">Compartir tirada</button>
-            </div>
+                
+                <!-- Botón de Cafecito -->
+               <!--- boton interfaz <a href="https://cafecito.app/tu_usuario" target="_blank" class="btn primary flex items-center gap-2">
+                    <span>☕</span> Invitá un cafecito
+                </a>-->
+				<a href='https://cafecito.app/anasauer' rel='noopener' target='_blank'><img srcset='https://cdn.cafecito.app/imgs/buttons/button_3.png 1x, https://cdn.cafecito.app/imgs/buttons/button_3_2x.png 2x, https://cdn.cafecito.app/imgs/buttons/button_3_3.75x.png 3.75x' src='https://cdn.cafecito.app/imgs/buttons/button_3.png' alt='Invitame un café en cafecito.app' /></a>
+            </div><br><div><p style="font-size: 14px; text-align:center;"><em>Tu apoyo me ayuda a seguir creando contenido.<br>¡Gracias por el cafecito!</em></p></div>
             <div> <button id="toggle-history-btn" class="btn small">Ver historial</button></div>
 
             <!-- historial (ahora oculto) -->
@@ -415,7 +420,7 @@
         { id: 15, title: "VOZ INTERIOR", description: "Ese susurro que callas es la brújula que te guía.", area: "Autoconocimiento" },
         { id: 16, title: "EL PULSO INTERNO", description: "Confía en esa corazonada. Sabés más de lo que pensás.", area: "Autoconocimiento" },
         { id: 17, title: "LA SEMILLA INVISIBLE", description: "Todavía no lo ves, pero algo ya está creciendo.", area: "Autoconocimiento" },
-        { id: 18, title: "EL ECO", description: "1.	“¿Estás repitiendo o eligiendo? Lo que hacés resuena.", area: "Autoconocimiento" },
+        { id: 18, title: "EL ECO", description: "1. “¿Estás repitiendo o eligiendo? Lo que hacés resuena.", area: "Autoconocimiento" },
         { id: 19, title: "EL SÍ SILENCIOSO", description: "Dijiste que sí, sin palabras. Confía en el gesto que tu alma ya dio.", area: "Autoconocimiento" },
         { id: 20, title: "LA MIRADA TIERNA", description: "Probá mirarte como mirarías a alguien que amás.", area: "Sanación" },
         { id: 21, title: "EL PORTAL INTERIOR", description: "Tu mayor puerta no se abre hacia afuera, sino hacia adentro.", area: "Autoconocimiento" },
@@ -669,7 +674,7 @@
             return;
         }
         const title = 'Pulso Cósmico — Mi tirada';
-        const text = `Mi tirada: ${lastTirada.cards.join(', ')} — ${window.location.href}`;
+        const text = `Mi tirada: ${lastTirada.cards.map(id => allCardsData.find(c => c.id === id).title).join(', ')} - Descubre su significado aquí: ${window.location.href}`;
         if (navigator.share) {
             try {
                 await navigator.share({ title, text, url: window.location.href });
@@ -686,42 +691,47 @@
                 el.select();
                 document.execCommand('copy');
                 document.body.removeChild(el);
-                showTopMessage('Tirada copiada al portapapeles');
+                showTopMessage('Enlace copiado al portapapeles');
             } catch (e) {
                 showTopMessage('No se pudo copiar');
             }
         }
     }
 
-    /* share single card (card object) */
-    async function shareSingleCard(cardObj) {
-        const text = `${cardObj.title} — ${cardObj.description}\nPulso Cósmico`;
+    async function shareSingleCard(cardData) {
+        const title = `Pulso Cósmico - ${cardData.title}`;
+        const text = `Mi carta del día: "${cardData.title}" - "${cardData.description}"`;
+
         if (navigator.share) {
             try {
-                await navigator.share({ title: cardObj.title, text });
-                showTopMessage('Carta compartida');
-            } catch (e) { showTopMessage('Cancelado'); }
+                await navigator.share({ title, text, url: window.location.href });
+                showTopMessage('Compartido');
+            } catch (e) {
+                showTopMessage('Cancelado');
+            }
         } else {
             try {
-                // Using document.execCommand for better iFrame compatibility
                 const el = document.createElement('textarea');
                 el.value = text;
                 document.body.appendChild(el);
                 el.select();
                 document.execCommand('copy');
                 document.body.removeChild(el);
-                showTopMessage('Carta copiada');
-            } catch (e) { showTopMessage('No se pudo copiar'); }
+                showTopMessage('Texto copiado al portapapeles');
+            } catch (e) {
+                showTopMessage('No se pudo copiar');
+            }
         }
     }
-
-    /* ---------- wire buttons ---------- */
+    
+    // Listeners
     document.getElementById('start-btn').addEventListener('click', () => {
         introScreen.classList.add('fade-out');
         setTimeout(() => {
             introScreen.style.display = 'none';
             appMain.classList.add('visible');
-        }, 500); 
+            dealCards(1);
+        }, 500);
     });
 
     document.getElementById('draw-1-btn').addEventListener('click', () => dealCards(1));
@@ -731,23 +741,23 @@
     document.getElementById('shuffle-btn').addEventListener('click', shuffleCurrent);
     document.getElementById('share-btn').addEventListener('click', shareTirada);
     document.getElementById('clear-history').addEventListener('click', () => {
-        // Reemplazar `confirm()` con una ventana modal personaliza
-        if (window.confirm("¿Seguro que quieres borrar el historial?")) {
-            localStorage.removeItem(STORAGE_HIST_KEY);
-            buildHistory();
+        localStorage.removeItem(STORAGE_HIST_KEY);
+        buildHistory();
+    });
+    document.getElementById('toggle-history-btn').addEventListener('click', () => {
+        const histPanel = document.getElementById('history-panel');
+        if (histPanel.style.display === 'none') {
+            histPanel.style.display = 'block';
+            document.getElementById('toggle-history-btn').textContent = 'Ocultar historial';
+        } else {
+            histPanel.style.display = 'none';
+            document.getElementById('toggle-history-btn').textContent = 'Ver historial';
         }
     });
 
-    const historyPanel = document.getElementById('history-panel');
-    document.getElementById('toggle-history-btn').addEventListener('click', () => {
-        historyPanel.style.display = historyPanel.style.display === 'none' ? 'block' : 'none';
-    });
+    // Initial build
+    buildHistory();
 
-    /* init on load */
-    window.onload = () => {
-        buildHistory();
-        dealCards(1); 
-    }
 </script>
 </body>
 </html>
